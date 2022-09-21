@@ -1,0 +1,31 @@
+$shadow: .3rem .3rem .6rem var(--greyLight-2), 
+-.2rem -.2rem .5rem var(--white);
+$inner-shadow: inset .2rem .2rem .5rem var(--greyLight-2), 
+inset -.2rem -.2rem .5rem var(--white);
+
+
+ 
+ /*  ICONS  */
+ .icon__box {
+    grid-column: 3 / 4;
+    grid-row: 4 / 5;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: $shadow;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--greyDark);
+    transition: all .5s ease;
+  
+      &:active {
+        box-shadow: $inner-shadow;
+        color: var(--primary);
+      }
+      &:hover {color: var(--primary);}
+  
+    
+  }
+  

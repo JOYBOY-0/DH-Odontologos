@@ -1,0 +1,38 @@
+$shadow: .3rem .3rem .6rem var(--greyLight-2), 
+-.2rem -.2rem .5rem var(--white);
+$inner-shadow: inset .2rem .2rem .5rem var(--greyLight-2), 
+inset -.2rem -.2rem .5rem var(--white);
+
+/*  SEGMENTED-CONTROL */
+.segmented-control {
+  padding: .5rem .5rem 0 .5rem;
+  box-shadow: $shadow;
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 1rem;
+  input { display: none; }
+  
+  
+  &__tab {
+    width: 7.5rem;
+    height: 3.6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: var(--greyDark);
+    transition: all .5s ease;
+  
+    &:hover { color: var(--primary); }
+  }
+  
+  &__color {
+    position: absolute;
+    height: 3.6rem;
+    width: 7.5rem;
+    box-shadow: $inner-shadow;
+    pointer-events: none;
+  }
+}
+    

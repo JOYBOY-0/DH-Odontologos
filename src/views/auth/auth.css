@@ -1,0 +1,95 @@
+.auth_container {
+  @apply flex flex-col items-center justify-center;
+}
+
+.auth_wrapper {
+  @apply w-full max-w-[380px];
+}
+
+.auth_form_box {
+  /* background: linear-gradient(180deg,  75%, rgba(255, 255, 255, 0.25) 100%); */
+  @apply flex flex-col items-center font-primary p-4 rounded-lg w-full relative;
+}
+
+.auth_form_content {
+  @apply flex flex-col w-full items-center justify-center;
+}
+
+.auth_title {
+  @apply relative uppercase text-4xl font-[200] text-slate-500 mb-2;
+}
+
+.auth_subtitle {
+  @apply text-slate-500 text-center mb-3;
+}
+
+.auth_label {
+  @apply text-lg mb-1 mt-4 w-full font-semibold text-slate-300;
+}
+
+
+.btn_disabled {
+  @apply flex mt-4 py-2 px-8 
+    text-white tracking-wider text-xl font-bold 
+    bg-slate-500 rounded-lg cursor-not-allowed
+    transition-all duration-300 ease-in-out shadow
+}
+
+.auth_btn {
+  box-shadow: #eb258840 0px 5px 15px;
+  @apply flex mt-4 py-2 px-8 
+    text-white tracking-wider text-xl font-bold 
+    bg-devPink-600 rounded-lg 
+    transition-all duration-300 ease-in-out 
+    hover:bg-devPink-500;
+}
+
+.auth_btn:hover {
+  box-shadow: #e90ea75f 0px 0px 3px, #8a1e5964 0px 5px 15px;
+}
+
+.auth_apps_wrapper {
+  @apply flex w-full h-12 mt-6 justify-between;
+}
+
+@keyframes solid-rotate {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+.auth_bg_anim {
+  @apply p-1 rounded-2xl bg-devPink-600 relative z-0 overflow-hidden;
+}
+
+.auth_bg_anim::before{
+    content: '';
+    position: absolute;
+    z-index: -2;
+    left: -50%;
+    top: -50%;
+    width: 200%;
+    height: 200%;
+    background-color: var(--devPink-600);
+    background-repeat: no-repeat;
+    background-size: 50% 50%, 50% 50%;
+    background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+    background-image: 
+            linear-gradient(var(--devyellow-400), var(--devyellow-400)), 
+            linear-gradient(var(--devpink-600), var(--devpink-600)), 
+            linear-gradient( var(--devblue-600), var(--devblue-600)), 
+            linear-gradient( var(--devpink-600),  var(--devpink-600));
+    animation: solid-rotate 25s linear infinite;
+	}
+
+  .auth_bg_anim_loading::before{
+    animation-duration: 12s;
+  }
+
+  .auth_backdrop_loading{
+    @apply flex-col items-center justify-center
+    font-primary p-6 rounded-lg w-full h-full 
+    shadow-md bg-slate-700/40
+    absolute top-0 left-0 backdrop-blur-[1px]
+  }
+	
