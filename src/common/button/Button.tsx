@@ -1,11 +1,11 @@
 import React, { FC, MouseEvent  } from 'react'
 import './button.scss'
 
-export interface IButtonProps {
+export interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
   className?: any;
   secondary?: boolean;
-  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (params : any) => void;
   paddding?: string;
 }
 

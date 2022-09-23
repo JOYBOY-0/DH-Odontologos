@@ -4,7 +4,15 @@ export type Patient = {
     apellido: string;
     email: string;
     dni: number;
-    direccion: string;
+    domicilio: Adress;
     registerDate: string;
+}
+
+export type Adress = {
+    id: number;
+    calle: string;
+    numero: number;
+    localidad: string;
+    provincia: string
 }
     

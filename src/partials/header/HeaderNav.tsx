@@ -21,7 +21,7 @@ export const HeaderNav = () => {
   return (
   <>
     <div className={`fixed top-0 w-full font-primary 
-      transition-all ease-in transform z-50 duration-300
+      transition-all ease-in transform z-20 duration-300
       ${scrollPosition > 15 && ' bg-greyLight1 backdrop-blur-sm shadow-md'}
       ${scrollDown && !open ? 'md:-translate-y-1/4 md:opacity-0' : ''}`} 
     >

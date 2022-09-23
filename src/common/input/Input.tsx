@@ -6,6 +6,7 @@ interface Props extends AllHTMLAttributes<HTMLInputElement> {
     placeholder?: string,
     name?: string,
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    wrapperClassName?: string,
 }
 
 export const Input : FC<Props> = ({
@@ -20,11 +21,12 @@ export const Input : FC<Props> = ({
     disabled,
     className,
     children,
+    wrapperClassName,
     ...props
 }) => {
 
   return (
-    <div className='flex flex-col-reverse items-start font-primary group w-full relative'>
+    <div className={`flex flex-col-reverse items-start font-primary group w-full relative ${wrapperClassName}`}>
 
         <input 
         className={`w-full p-3 rounded-lg transition-all 

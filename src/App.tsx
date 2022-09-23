@@ -5,8 +5,13 @@ import { AuthGuard, AdminGuard, PrivateRoutes, PublicRoutes, AdminRoutes } from 
 import { RouteNotFound } from './utilities/RouteNotFound'
 import { Dasboard, Home, Turnos } from '@/views'
 import Auth from './views/auth/Auth'
+import { useDataContext } from './context/dataContext'
 
 function App() {
+
+  const {patients, dentists, appointments} = useDataContext();
+
+  console.log({patients, dentists, appointments})
   
   return (
     <RouteNotFound>

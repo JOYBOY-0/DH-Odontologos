@@ -6,15 +6,21 @@ import React, { FC } from 'react'
 type dentistCardProps = {
     data : Dentist,
     className?: string,
-    alterBackground?: boolean
+    deleteDentist : () => void,
+    editDentist : (id : number) => void
+
 }
 
 
-export const DentistCard : FC<dentistCardProps> = ({className, data, alterBackground}) => {
+export const DentistCard : FC<dentistCardProps> = ({
+  className, 
+  data, 
+  deleteDentist,
+  editDentist
+}) => {
   return (
-    <div className={`flex justify-between items-start
-    p-4 rounded-md
-    ${alterBackground ? 'bg-greyLight2/20' : ''}`} >
+    <div className="flex justify-between items-start
+    p-4 rounded-md bg-greyLight2/20" >
         <div className="flex flex-col items-start justify-center 
         text-slate-600 gap-2">
           <h4>
@@ -33,10 +39,14 @@ export const DentistCard : FC<dentistCardProps> = ({className, data, alterBackgr
         </div>
         <div className="flex items-end justify-center 
         text-slate-600 gap-4 ml-10 pl-8 border-l-2 border-greyLight2">
-          <Button secondary paddding='p-3' >
+          <Button secondary paddding='p-3' 
+           onClick={editDentist}
+          >
             <PencilIcon className='h-6 w-6' />
           </Button>
-          <Button secondary paddding='p-3' >
+          <Button secondary paddding='p-3' 
+            onClick={deleteDentist}
+          >
             <TrashIcon className='h-6 w-6' />
           </Button>
         </div>

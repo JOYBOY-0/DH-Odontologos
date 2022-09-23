@@ -1,57 +1,31 @@
 import { Button } from '@/common/button/Button'
 import { DropDown, DropItem } from '@/common/drop-down'
 import { Input } from '@/common/input/Input'
-import { useFetchData } from '@/hooks/useFetchData'
+import { LoadSpinner } from '@/common/load-spinner/LoadSpinner'
+import { FetchStatus, useFetchData } from '@/hooks/useFetchData'
 import { Dentist } from '@/models/Dentist'
-import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon, PlusCircleIcon } from '@heroicons/react/24/solid'
-import React, { useState } from 'react'
+import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon, PlusCircleIcon, XCircleIcon } from '@heroicons/react/24/solid'
+import React, { useEffect, useState } from 'react'
+import { FetchError } from '../messages/FetchError'
 import { NoResults } from '../messages/NoResults'
+import { DashboardForm } from '../modal/DashboardForm'
 import  {DentistCard}  from './DentistCard'
-
+import { DentistFormFields } from './DentistFormFields'
+import { useDataContext } from '@/context/dataContext'
 export const Dentists = () => {
 
   const {
-    loading,
-    error,
-    data,
-    fetchData
-  } = useFetchData()
+    dentistStatus,
+    dentists,
+    getDentists,
+    addDentist,
+    updateDentist,
+    deleteDentist
+  } = useDataContext()
 
     const [search, setSearch] = useState('')
     const [sort, setSort] = useState({asc : true, property : 'nombre'})
 
-
-
-    const dentistList : Array<Dentist> = [
-        {
-            id: 1,
-            nombre: 'John',
-            apellido: 'Doe',
-            matricula: 20242425,
-            email : 'demo-email@email.com',
-            // direccion: 'Calle n29, ciudad nombre Ciudad, Pais',
-            // registerDate: '2021-01-01'
-        },
-        {
-            id: 2,
-            nombre: 'John',
-            apellido: 'Doe',
-            matricula: 20242425,
-            email : 'demo-email@email.com',
-            // direccion: 'Calle n29, ciudad nombre Ciudad, Pais',
-            // registerDate: '2021-01-01'
-        },
-        {
-            id: 3,
-            nombre: 'John',
-            apellido: 'Doe',
-            matricula: 20242425,
-            email : 'demo-email@email.com',
-            // direccion: 'Calle n29, ciudad nombre Ciudad, Pais',
-            // registerDate: '2021-01-01'
-        }
-
-    ]
 
     // takes the search input and removes the spaces
     const trimmedSearch = search.trim().split(/\s+/);
@@ -59,56 +33,89 @@ export const Dentists = () => {
     const filter = (dentist : Dentist, word : string) => {
     return (dentist.nombre.toLowerCase().includes(word.toLowerCase())
     || dentist.apellido.toLowerCase().includes(word.toLowerCase())
-    || dentist.matricula.toString().includes(word)
+    || dentist.matricula.toString().includes(word.toLowerCase())
     || dentist.email.toLowerCase().includes(word.toLowerCase())
     )
   }
 
-    const filteredDentists = dentistList.filter((dentist) => {
+    const filteredDentists = dentists?.filter((dentist) => {
         let match = false;
         trimmedSearch.forEach((word) => {
           match = match || filter(dentist, word);
         })
 
         return match
-    })
-
-        // defines 4 types of sorting: asc by name, desc by name, asc by id, desc by id
-      // const sortDentists = (dentists : Dentist[], asc : boolean, property : string) => {
-      //   return dentists.sort((a : any, b : any) => {
-      //     if (asc) {
-      //       if (a[property] < b[property]) {
-      //         return -1
-      //       }
-      //       if (a[property] > b[property]) {
-      //         return 1
-      //       }
-      //       return 0
-      //     } else {
-      //       if (a[property] > b[property]) {
-      //         return -1
-      //       }
-      //       if (a[property] < b[property]) {
-      //         return 1
-      //       }
-      //       return 0
-      //     }
-      //   })
-      // }
+    })    
 
     // const sortedResult = sortDentists(filteredDentists, sort.asc, sort.property);
+    const [openModal, setOpenModal] = useState(false);
+    const [openEditModal, setOpenEditModal] = useState(false);
 
-    if (loading) {
-      return <div>Loading...</div>
+    const emptyDentist : Dentist = {
+        id: 0,
+        nombre: '',
+        apellido: '',
+        matricula: '',
+        email : ''
     }
 
-    if (error) {
-      return <div>Error</div>
+    const [modalValues, setModalValues] = useState(emptyDentist)
+
+    const handleCreate = (e : any) => {
+        e.preventDefault()
+        addDentist('http://localhost:8080/odontologos', modalValues)
+        setOpenModal(false)
+        // reset modal values
+        setModalValues(emptyDentist)
+        
+    }
+
+    const handleDelete = (id : number) =>  {
+        deleteDentist(`http://localhost:8080/odontologos/${id}`)
+    }
+
+    const handleEditModal = (dentist : Dentist) => {
+        setModalValues(dentist)
+        setOpenModal(false)
+        setOpenEditModal(true)
+    }
+    
+    const handleEdit = (id : number) => {
+        console.log(modalValues)
+        updateDentist(`http://localhost:8080/odontologos/`, modalValues)
+        setModalValues(emptyDentist)
+        setOpenEditModal(false)
+        setOpenModal(false)
     }
 
     return (
 
-        <>
+        <>  
+            <DashboardForm
+                open={openModal}
+                setOpen={setOpenModal}
+                title="Nuevo Odontologo"
+                onSubmit={handleCreate}
+            > 
+                <DentistFormFields
+                    data={modalValues}
+                    setData={setModalValues}
+                    onReset={() => setModalValues(emptyDentist)}
+                />
+            </DashboardForm>
+            <DashboardForm
+                open={openEditModal}
+                setOpen={setOpenEditModal}
+                title="Editar Odontologo"
+                onSubmit={(e) => {e.preventDefault(); handleEdit(modalValues.id)}}
+            > 
+                <DentistFormFields
+                    data={modalValues}
+                    setData={setModalValues}
+                    onReset={() => setModalValues(emptyDentist)}
+                />
+            </DashboardForm>
+
             <nav className="pt-2 pb-4 flex items-center justify-between flex-wrap ">
                 <div className="flex items-center mx-4">
                     <MagnifyingGlassIcon className='h-8 mr-2 font-bold text-primary' />
@@ -148,25 +155,32 @@ export const Dentists = () => {
                     </DropItem>
                 </DropDown>
                 <Button 
+                    onClick={() => setOpenModal(true)}
                     className='flex items-center justify-center ml-auto'
                     paddding='px-4 py-3'
                 >
                     <PlusCircleIcon className='h-6 mr-2 ' />
-                    <p>Crear paciente</p>
+                    <p>Crear odontologo</p>
                 </Button>           
             </nav>
 
-            <ul className='w-full flex flex-col'>
-                {   
-                    filteredDentists.length > 0 ? 
+            <ul className='w-full flex flex-col mb-auto odd:bg-greyLight2/20'>
 
-                    filteredDentists.map((dentist, i) => (
+            {dentistStatus === FetchStatus.LOADING && <LoadSpinner className='m-auto' />}
+
+            {dentistStatus === FetchStatus.ERROR && <FetchError className='m-auto' />}
+    
+                {dentistStatus === FetchStatus.SUCCESS &&   
+                    (filteredDentists.length > 0 ? 
+
+                    filteredDentists.map((dentist : Dentist, i) => (
                         <DentistCard
-                            alterBackground={i % 2 === 0}
                             key={i}
                             data={dentist}
+                            deleteDentist={() => handleDelete(dentist.id)}
+                            editDentist={() => handleEditModal(dentist)}
                         />
-                    )) : <NoResults  className='m-auto' />
+                    )) : <NoResults  className='m-auto' />)
                 }
             </ul>
         </>

@@ -3,6 +3,6 @@ export type Dentist = {
     nombre: string;
     apellido: string;
     email: string;
-    matricula: number;
+    matricula: string;
     // registerDate: string; 
 }

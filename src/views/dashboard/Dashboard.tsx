@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 import { Base } from '../../common/Layout/Base'
 import { Section } from '../../common/Layout/Section'
+import { Appointments } from './components/appointments/Appointments'
 import { Dentists } from './components/dentist/Dentists'
 import { Patients } from './components/patients/Patients'
 import { Tabs } from './components/tabs/Tabs'
@@ -19,8 +20,8 @@ export const Dasboard = () => {
       path: '/admin/odontologos'
     },
     {
-      name: 'Calendario',
-      path: '/admin/calendario'
+      name: 'Turnos',
+      path: '/admin/turnos'
     }
   ]
 
@@ -30,11 +31,10 @@ export const Dasboard = () => {
     if (location.pathname === '/admin') {
       return navigate("/admin/pacientes");
     }
+
+    setActiveTab(tabs.findIndex((tab) => tab.path === location.pathname));
   
   }, [])
-  
-
-  
   
 
   return (
@@ -58,7 +58,9 @@ export const Dasboard = () => {
             <Routes>
             <Route path='/pacientes' element={<Patients />} />
             <Route path='/odontologos' element={<Dentists />} />
-            </Routes>
+            <Route path='/turnos' element={<Appointments />} />
+
+          </Routes>
           </Box>
         </section>
       </Section>

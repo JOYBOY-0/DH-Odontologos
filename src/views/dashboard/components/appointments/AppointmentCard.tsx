@@ -1,48 +1,52 @@
 import { Button } from '@/common/button/Button'
-import { Patient } from '@/models'
+import { Appointment } from '@/models'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid'
 import React, { FC } from 'react'
 
-type patientCardProps = {
-    data : Patient,
+type appointmentCardProps = {
+    data : Appointment,
     className?: string,
-    deletePatient : () => void,
-    editPatient : (id : number) => void
+    deleteAppointment : () => void,
+    editAppointment : (id : number) => void
 }
 
-export const PatientCard : FC<patientCardProps> = ({
+export const AppointmentCard : FC<appointmentCardProps> = ({
   className, 
   data, 
-  deletePatient,
-  editPatient
+  deleteAppointment,
+  editAppointment
 }) => {
   return (
-    <div className="flex justify-between items-start
-    p-4 rounded-md" >
+    <div className='flex justify-between items-start
+    p-4 rounded-md' >
         <div className="flex flex-col items-start justify-center 
-        text-slate-600 gap-2">
+        text-slate-600 gap-2 font-semibold">
           <h4>
-            {data.apellido} {data.nombre}
+            adasd
           </h4>
           <p className="text-sm text-greyDark2">
             <span className='text-primary'>DNI: </span>
-            {data.dni}</p>
+            asdas
+            </p>
         </div>
         <div className="flex flex-col items-end justify-center 
         text-slate-600 gap-2 ml-auto">
-          <p>{data.email}</p>
+          <p>
+            sada
+          </p>
           <p className="text-sm text-greyDark2">
-            {data.domicilio.calle} {data.domicilio.numero}, {data.domicilio.localidad}, {data.domicilio.provincia}</p>
+            dasdasdasd
+          </p>
         </div>
         <div className="flex items-end justify-center 
         text-slate-600 gap-4 ml-10 pl-8 border-l-2 border-greyLight2">
           <Button secondary paddding='p-3' 
-            onClick={editPatient}
+            onClick={editAppointment}
           >
             <PencilIcon className='h-6 w-6' />
           </Button>
           <Button secondary paddding='p-3' 
-            onClick={deletePatient}
+            onClick={deleteAppointment}
           >
             <TrashIcon className='h-6 w-6' />
           </Button>

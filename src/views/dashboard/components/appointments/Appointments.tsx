@@ -2,47 +2,54 @@ import { Button } from '@/common/button/Button'
 import { DropDown, DropItem } from '@/common/drop-down'
 import { Input } from '@/common/input/Input'
 import { LoadSpinner } from '@/common/load-spinner/LoadSpinner'
-import { useDataContext } from '@/context/dataContext'
 import { FetchStatus, useFetchData } from '@/hooks/useFetchData'
-import { Patient } from '@/models'
-import { EmptyPatient } from '@/models/mockups/EmptyPatient'
+import { Patient, Appointment, Dentist  } from '@/models/index'
+import { EmptyAppointment } from '@/models/mockups/EmptyAppointment'
 import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon, PlusCircleIcon, XCircleIcon } from '@heroicons/react/24/solid'
 import React, { useEffect, useState } from 'react'
 import { FetchError } from '../messages/FetchError'
 import { NoResults } from '../messages/NoResults'
 import { DashboardForm } from '../modal/DashboardForm'
-import  {PatientCard}  from './PatientCard'
-import { PatientFormFields } from './PatientFormFields'
+import  { AppointmentCard }  from './AppointmentCard'
+import { AppointmentFormFields } from './AppointmentFormFields'
 
-export const Patients = () => {
+export const Appointments = () => {
 
   const {
-    patientStatus,
-    patients,
-    getPatients,
-    addPatient,
-    updatePatient,
-    deletePatient
-  } = useDataContext()
-
+    status,
+    data,
+    getData,
+    postData,
+    putData,
+    deleteData
+  } = useFetchData()
+  
     const [search, setSearch] = useState('')
     const [sort, setSort] = useState({asc : true, property : 'nombre'})
+
+    useEffect(() => {
+    //fetch data after component updates
+    setTimeout(() => {
+        getData('http://localhost:8080/pacientes')
+    }, 500)
+
+    }, [])
 
     // takes the search input and removes the spaces
     const trimmedSearch = search.trim().split(/\s+/);
 
-    const filter = (patient : Patient, word : string) => {
-    return (patient.nombre.toLowerCase().includes(word.toLowerCase())
-    || patient.apellido.toLowerCase().includes(word.toLowerCase())
-    || patient.dni.toString().includes(word.toLowerCase())
-    || patient.email.toLowerCase().includes(word.toLowerCase())
-    )
+    const filter = (turno : Appointment, word : string) => {
+        return (turno.nombre.toLowerCase().includes(word.toLowerCase())
+        || turno.apellido.toLowerCase().includes(word.toLowerCase())
+        || turno.matricula.toString().includes(word.toLowerCase())
+        || turno.email.toLowerCase().includes(word.toLowerCase())
+        )
   }
 
-    const filteredPatients = patients?.filter((patient) => {
+    const filteredAppointments = data?.filter((turno) => {
         let match = false;
         trimmedSearch.forEach((word) => {
-          match = match || filter(patient, word);
+          match = match || filter(turno, word);
         })
 
         return match
@@ -52,37 +59,39 @@ export const Patients = () => {
     const [openModal, setOpenModal] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
 
+    
 
-    const [modalValues, setModalValues] = useState(EmptyPatient)
+    const [modalValues, setModalValues] = useState(EmptyAppointment)
 
-    const handleCreate = (e : any) => {
+    const handleCreate = async (e : any) => {
         e.preventDefault()
-        addPatient('http://localhost:8080/pacientes', modalValues)
+        await postData('http://localhost:8080/turnos', modalValues)
         setOpenModal(false)
         // reset modal values
-        setModalValues(EmptyPatient)
+        setModalValues(EmptyAppointment)
         // update data
-        getPatients('http://localhost:8080/pacientes');
+        getData('http://localhost:8080/turnos');
         
     }
 
-    const handleDelete = (id : number) => {
-        deletePatient(`http://localhost:8080/pacientes/${id}`)
+    const handleDelete = async (id : number) => {
+        await deleteData(`http://localhost:8080/turnos/${id}`)
+        // update data
+        getData('http://localhost:8080/turnos');
     }
 
-    const handleEditModal = (patient : Patient) => {
-        setModalValues(patient)
+    const handleEditModal = (turno : Appointment) => {
+        setModalValues(turno)
         setOpenModal(false)
         setOpenEditModal(true)
     }
     
-    const handleEdit = (id : number) => {
-        console.log(modalValues)
-        updatePatient(`http://localhost:8080/pacientes/`, modalValues)
-        setModalValues(EmptyPatient)
+    const handleEdit = async (id : number) => {
+        await putData(`http://localhost:8080/turnos/`, modalValues)
+        setModalValues(EmptyAppointment)
         setOpenEditModal(false)
         setOpenModal(false)
-        getPatients('http://localhost:8080/pacientes');
+        getData('http://localhost:8080/turnos');
 
     }
 
@@ -96,10 +105,10 @@ export const Patients = () => {
                 title="Nuevo Paciente"
                 onSubmit={handleCreate}
             > 
-                <PatientFormFields
+                <AppointmentFormFields
                     data={modalValues}
                     setData={setModalValues}
-                    onReset={() => setModalValues(EmptyPatient)}
+                    onReset={() => setModalValues(EmptyAppointment)}
                 />
             </DashboardForm>
             <DashboardForm
@@ -109,10 +118,10 @@ export const Patients = () => {
                 title="Editar paciente"
                 onSubmit={(e) => {e.preventDefault(); handleEdit(modalValues.id)}}
             > 
-                <PatientFormFields
+                <AppointmentFormFields
                     data={modalValues}
                     setData={setModalValues}
-                    onReset={() => setModalValues(EmptyPatient)}
+                    onReset={() => setModalValues(EmptyAppointment)}
                 />
             </DashboardForm>
 
@@ -121,7 +130,7 @@ export const Patients = () => {
                     <MagnifyingGlassIcon className='h-8 mr-2 font-bold text-primary' />
                     <Input
                         className='w-96'
-                        placeholder='Buscar paciente'
+                        placeholder='Buscar turno'
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
@@ -132,13 +141,13 @@ export const Patients = () => {
                     <DropItem>
                         <li className='flex items-center py-1'>
                             <ArrowDownIcon className='h-4 mr-2' />
-                            <p className='mr-2'>Nombre</p>
+                            <p className='mr-2'>Fecha</p>
                         </li>
                     </DropItem>
                     <DropItem>
                         <li className='flex items-center py-1'>
                             <ArrowUpIcon className='h-4 mr-2' />
-                            <p className='mr-2'>Nombre</p>
+                            <p className='mr-2'>Fecha</p>
                         </li>
                     </DropItem>
                     <DropItem>
@@ -160,25 +169,25 @@ export const Patients = () => {
                     paddding='px-4 py-3'
                 >
                     <PlusCircleIcon className='h-6 mr-2 ' />
-                    <p>Crear paciente</p>
+                    <p>Nuevo turno</p>
                 </Button>           
             </nav>
 
             <ul className='w-full flex flex-col mb-auto odd:bg-greyLight2/20'>
 
-            {patientStatus === FetchStatus.LOADING && <LoadSpinner className='m-auto' />}
+            {status === FetchStatus.LOADING && <LoadSpinner className='m-auto' />}
 
-            {patientStatus === FetchStatus.ERROR && <FetchError className='m-auto' />}
+            {status === FetchStatus.ERROR && <FetchError className='m-auto' />}
     
-                {patientStatus === FetchStatus.SUCCESS &&   
-                    (filteredPatients.length > 0 ? 
+                {status === FetchStatus.SUCCESS &&   
+                    (filteredAppointments.length > 0 ? 
 
-                    filteredPatients.map((patient : Patient, i) => (
-                        <PatientCard
+                    filteredAppointments.map((turno : Appointment, i) => (
+                        <AppointmentCard
                             key={i}
-                            data={patient}
-                            deletePatient={() => handleDelete(patient.id)}
-                            editPatient={() => handleEditModal(patient)}
+                            data={turno}
+                            deleteAppointment={() => handleDelete(turno.id)}
+                            editAppointment={() => handleEditModal(turno)}
                         />
                     )) : <NoResults  className='m-auto' />)
                 }
