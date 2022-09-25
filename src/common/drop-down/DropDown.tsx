@@ -38,7 +38,6 @@ export const DropDown : FC<Props> = (props) => {
           <Menu.Items className="absolute right-0 mt-2 w-48 
           origin-top-right divide-y divide-greyLight2 
           rounded-md bg-greyLight1 shadow-lg overflow-hidden
-          
            focus:outline-none box__standard">
             {props.children}
           </Menu.Items>

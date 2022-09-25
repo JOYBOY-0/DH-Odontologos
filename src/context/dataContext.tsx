@@ -1,5 +1,5 @@
 import { FetchStatus, useFetchData } from "@/hooks/useFetchData";
-import { Appointment, Dentist, Patient } from "@/models";
+import { Appointment, AppointmentPost, Dentist, Patient } from "@/models";
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 export type dataContext = {
@@ -14,7 +14,7 @@ export type dataContext = {
     getAppointments : (url : string) => void,
     addPatient : (url : string, body: Patient) => void,
     addDentist : (url : string, body: Dentist) => void,
-    addAppointment : (url : string, body: Appointment) => void,
+    addAppointment : (url : string, body: AppointmentPost) => void,
     updatePatient : (url : string, body: Patient) => void,
     updateDentist : (url : string, body: Dentist) => void,
     updateAppointment : (url : string, body: Appointment) => void,
@@ -51,6 +51,7 @@ export const DataProvider = ({ children } : {children : React.ReactNode } ) => {
 
     const {
         status : patientStatus,
+        
         data : patients,
         getData : getPatients,
         postData : addPatient,

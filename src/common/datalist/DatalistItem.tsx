@@ -22,11 +22,12 @@ export const DatalistItem : FC<Props> = ({
     id,
     value
 }) => {
+
   return (
     <Combobox.Option
-      className={`text-slate-100 bg-slate-600 relative 
+      className={`text-slate-600 relative 
       cursor-default select-none py-2 px-4
-      hover:bg-slate-700 hover:text-white ${className}`}
+      hover:bg-greyLight2/30 ${className}`}
       value={value}
     >
       <span

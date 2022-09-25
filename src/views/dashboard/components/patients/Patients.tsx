@@ -99,7 +99,7 @@ export const Patients = () => {
                 <PatientFormFields
                     data={modalValues}
                     setData={setModalValues}
-                    onReset={() => setModalValues(EmptyPatient)}
+                    onReset={(e:any) => {e.preventDefault(); setModalValues(EmptyPatient)}}
                 />
             </DashboardForm>
             <DashboardForm
@@ -112,7 +112,7 @@ export const Patients = () => {
                 <PatientFormFields
                     data={modalValues}
                     setData={setModalValues}
-                    onReset={() => setModalValues(EmptyPatient)}
+                    onReset={(e:any) => {e.preventDefault(); setModalValues(EmptyPatient)}}
                 />
             </DashboardForm>
 

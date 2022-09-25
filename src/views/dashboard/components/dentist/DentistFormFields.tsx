@@ -6,7 +6,7 @@ import React, {FC} from 'react'
 export type DentistFormFieldsProps = {
     data : Dentist,
     setData : (prop : any) => void,
-    onReset : () => void,
+    onReset : (e:any) => void,
 }
 
 export const DentistFormFields : FC<DentistFormFieldsProps> = ({

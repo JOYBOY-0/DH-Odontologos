@@ -100,7 +100,7 @@ export const Dentists = () => {
                 <DentistFormFields
                     data={modalValues}
                     setData={setModalValues}
-                    onReset={() => setModalValues(emptyDentist)}
+                    onReset={(e:any) => {e.preventDefault(); setModalValues(emptyDentist)}}
                 />
             </DashboardForm>
             <DashboardForm
@@ -112,7 +112,7 @@ export const Dentists = () => {
                 <DentistFormFields
                     data={modalValues}
                     setData={setModalValues}
-                    onReset={() => setModalValues(emptyDentist)}
+                    onReset={(e:any) => {e.preventDefault(); setModalValues(emptyDentist)}}
                 />
             </DashboardForm>
 

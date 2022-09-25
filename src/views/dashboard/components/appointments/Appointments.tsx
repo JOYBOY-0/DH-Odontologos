@@ -2,11 +2,12 @@ import { Button } from '@/common/button/Button'
 import { DropDown, DropItem } from '@/common/drop-down'
 import { Input } from '@/common/input/Input'
 import { LoadSpinner } from '@/common/load-spinner/LoadSpinner'
+import { useDataContext } from '@/context/dataContext'
 import { FetchStatus, useFetchData } from '@/hooks/useFetchData'
-import { Patient, Appointment, Dentist  } from '@/models/index'
-import { EmptyAppointment } from '@/models/mockups/EmptyAppointment'
+import { Patient, Appointment, Dentist, AppointmentPost  } from '@/models/index'
+import { EmptyAppointment, EmptyAppointmentPost } from '@/models/mockups/EmptyAppointment'
 import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon, PlusCircleIcon, XCircleIcon } from '@heroicons/react/24/solid'
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import { FetchError } from '../messages/FetchError'
 import { NoResults } from '../messages/NoResults'
 import { DashboardForm } from '../modal/DashboardForm'
@@ -16,42 +17,32 @@ import { AppointmentFormFields } from './AppointmentFormFields'
 export const Appointments = () => {
 
   const {
-    status,
-    data,
-    getData,
-    postData,
-    putData,
-    deleteData
-  } = useFetchData()
+    appointmentStatus,
+    appointments,
+    addAppointment,
+    updateAppointment,
+    deleteAppointment
+  } = useDataContext()
   
     const [search, setSearch] = useState('')
     const [sort, setSort] = useState({asc : true, property : 'nombre'})
-
-    useEffect(() => {
-    //fetch data after component updates
-    setTimeout(() => {
-        getData('http://localhost:8080/pacientes')
-    }, 500)
-
-    }, [])
 
     // takes the search input and removes the spaces
     const trimmedSearch = search.trim().split(/\s+/);
 
     const filter = (turno : Appointment, word : string) => {
-        return (turno.nombre.toLowerCase().includes(word.toLowerCase())
-        || turno.apellido.toLowerCase().includes(word.toLowerCase())
-        || turno.matricula.toString().includes(word.toLowerCase())
-        || turno.email.toLowerCase().includes(word.toLowerCase())
+        return (turno.paciente.nombre.toLowerCase().includes(word.toLowerCase())
+        || turno.paciente.apellido.toLowerCase().includes(word.toLowerCase())
+        || turno.odontologo.nombre.toString().includes(word.toLowerCase())
+        || turno.odontologo.apellido.toLowerCase().includes(word.toLowerCase())
         )
-  }
+    }
 
-    const filteredAppointments = data?.filter((turno) => {
+    const filteredAppointments = appointments?.filter((turno) => {
         let match = false;
         trimmedSearch.forEach((word) => {
           match = match || filter(turno, word);
         })
-
         return match
     })    
 
@@ -59,25 +50,25 @@ export const Appointments = () => {
     const [openModal, setOpenModal] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
 
-    
-
     const [modalValues, setModalValues] = useState(EmptyAppointment)
 
-    const handleCreate = async (e : any) => {
+
+    const turnoCreate : AppointmentPost = {
+        paciente_id : modalValues.paciente.id,
+        odontologo_id : modalValues.odontologo.id,
+        fecha : modalValues.fecha,
+    }
+
+    const handleCreate = (e : any) => {
         e.preventDefault()
-        await postData('http://localhost:8080/turnos', modalValues)
+        addAppointment('http://localhost:8080/turnos', turnoCreate)
         setOpenModal(false)
         // reset modal values
         setModalValues(EmptyAppointment)
-        // update data
-        getData('http://localhost:8080/turnos');
-        
     }
 
-    const handleDelete = async (id : number) => {
-        await deleteData(`http://localhost:8080/turnos/${id}`)
-        // update data
-        getData('http://localhost:8080/turnos');
+    const handleDelete = (id : number) => {
+        deleteAppointment(`http://localhost:8080/turnos/${id}`)
     }
 
     const handleEditModal = (turno : Appointment) => {
@@ -86,42 +77,38 @@ export const Appointments = () => {
         setOpenEditModal(true)
     }
     
-    const handleEdit = async (id : number) => {
-        await putData(`http://localhost:8080/turnos/`, modalValues)
+    const handleEdit = (id : number) => {
+        updateAppointment(`http://localhost:8080/turnos/`, modalValues)
         setModalValues(EmptyAppointment)
         setOpenEditModal(false)
         setOpenModal(false)
-        getData('http://localhost:8080/turnos');
-
     }
 
     return (
 
         <>  
             <DashboardForm
-                className='my-[200px]'
                 open={openModal}
                 setOpen={setOpenModal}
-                title="Nuevo Paciente"
+                title="Nuevo turno"
                 onSubmit={handleCreate}
             > 
                 <AppointmentFormFields
                     data={modalValues}
                     setData={setModalValues}
-                    onReset={() => setModalValues(EmptyAppointment)}
+                    onReset={(e:any) => {e.preventDefault(); setModalValues(EmptyAppointment)}}
                 />
             </DashboardForm>
             <DashboardForm
-                className='mt-[30vh]'
                 open={openEditModal}
                 setOpen={setOpenEditModal}
-                title="Editar paciente"
+                title="Editar turno"
                 onSubmit={(e) => {e.preventDefault(); handleEdit(modalValues.id)}}
             > 
                 <AppointmentFormFields
                     data={modalValues}
                     setData={setModalValues}
-                    onReset={() => setModalValues(EmptyAppointment)}
+                    onReset={(e:any) => {e.preventDefault(); setModalValues(EmptyAppointment)}}
                 />
             </DashboardForm>
 
@@ -175,11 +162,11 @@ export const Appointments = () => {
 
             <ul className='w-full flex flex-col mb-auto odd:bg-greyLight2/20'>
 
-            {status === FetchStatus.LOADING && <LoadSpinner className='m-auto' />}
+            {appointmentStatus === FetchStatus.LOADING && <LoadSpinner className='m-auto' />}
 
-            {status === FetchStatus.ERROR && <FetchError className='m-auto' />}
+            {appointmentStatus === FetchStatus.ERROR && <FetchError className='m-auto' />}
     
-                {status === FetchStatus.SUCCESS &&   
+                {appointmentStatus === FetchStatus.SUCCESS &&   
                     (filteredAppointments.length > 0 ? 
 
                     filteredAppointments.map((turno : Appointment, i) => (

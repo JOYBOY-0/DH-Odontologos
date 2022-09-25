@@ -27,12 +27,11 @@ export const HeaderNav = () => {
     >
 
       <Section 
-      yPadding='py-2'
+      yPadding='py-6'
       >
         <div className='flex justify-center md:justify-between items-center relative'>
         <a href='#hero-section'>
-          <Logo dark className='h-20 cursor-pointer xl:hidden' />
-          <Logo dark size='wide' className='h-20 cursor-pointer hidden xl:block' />
+          <Logo className='text-xl cursor-pointer' />
         </a>
         <Button
           secondary
@@ -60,11 +59,11 @@ export const HeaderNav = () => {
                 Turnos
               </MenuNavLink>
               <MenuNavLink
-                to='/nosotros'
+                to='/admin'
                 className=''
                 activeClassName='font-semibold'
               >
-                Nosotros
+                Dashboard
               </MenuNavLink>
               <Button  >
                 <Link to="/auth/login">

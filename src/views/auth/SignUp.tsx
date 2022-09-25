@@ -1,5 +1,6 @@
 import { Button } from '@/common/button/Button'
 import { Input } from '@/common/input/Input'
+import { useFetchData } from '@/hooks/useFetchData'
 import React, { FC, useState } from 'react'
 
 type Props = {
@@ -20,6 +21,7 @@ export const Signup : FC<Props> =({
     const handleSubmit = () => {
         if (!loading) handleSignup(email, password)
     }
+    
   return (
     <div
         className="auth_form_content"

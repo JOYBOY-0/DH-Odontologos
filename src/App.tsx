@@ -10,8 +10,6 @@ import { useDataContext } from './context/dataContext'
 function App() {
 
   const {patients, dentists, appointments} = useDataContext();
-
-  console.log({patients, dentists, appointments})
   
   return (
     <RouteNotFound>

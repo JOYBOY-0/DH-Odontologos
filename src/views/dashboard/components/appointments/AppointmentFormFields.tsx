@@ -1,41 +1,60 @@
 import { Button } from '@/common/button/Button'
+import { Datalist, DatalistItem } from '@/common/datalist'
 import { Input } from '@/common/input/Input'
-import { Appointment, Patient } from '@/models'
+import { useDataContext } from '@/context/dataContext'
+import { Appointment, AppointmentPost } from '@/models'
 import React, {FC} from 'react'
 
 export type PatientFormFieldsProps = {
     data : Appointment,
     setData : (prop : any) => void,
-    onReset : () => void,
+    onReset : (e : any) => void,
 }
 
-export const PatientFormFields : FC<PatientFormFieldsProps> = ({
+export const AppointmentFormFields : FC<PatientFormFieldsProps> = ({
   data,
   setData,
   onReset,
 }) => {
+
+    const {
+        patients,
+        dentists,
+    } = useDataContext();
+
   return (
     <>
+
     <Input
-        required
-        label='Nombre'
-        value={data.nombre}
-        onChange={(e) => setData({ ...data, nombre: e.target.value })}
-    />
-    <Input
-        required
-        label='Apellido'
-        value={data.apellido}
-        onChange={(e) => setData({ ...data, apellido: e.target.value })}
-    />
-    <Input
-        required
-        label='DNI'
-        value={data.dni}
-        onChange={(e) => setData({ ...data, dni: e.target.value })}
+        label="Fecha"
+        type='date'
+        value={data.fecha}
+        onChange={(e) => setData({...data, fecha : e.target.value})}
+        
     />
 
-    <div className='grid grid-cols-4 w-full gap-4 items-stretch justify-end'>
+    <Datalist
+        onChange={(e) => setData({...data, paciente : e})}
+        data={patients}
+        value={data.paciente}
+        label="Seleccione un paciente"
+        resultRenderer= {(item : any, i : number) => (
+            <DatalistItem key={i} name={`${item.apellido} ${item.nombre}`} value={item} />
+        )}
+    />
+
+    <Datalist
+        onChange={(e) => setData({...data, odontologo : e})}
+        data={dentists}
+        value={data.odontologo}
+        label="Seleccione un odontologo"
+        resultRenderer= {(item : any, i : number) => (
+            <DatalistItem key={i} name={`${item.apellido} ${item.nombre}`} value={item} />
+        )}
+    />
+    
+
+    {/* <div className='grid grid-cols-4 w-full gap-4 items-stretch justify-end'>
         <Input
             required
             wrapperClassName='col-span-3'
@@ -43,6 +62,7 @@ export const PatientFormFields : FC<PatientFormFieldsProps> = ({
             value={data.domicilio.calle}
             onChange={(e) => setData({ ...data, domicilio: { ...data.domicilio, calle: e.target.value } })}
         />
+        
         <Input
             required
             label='Numero'
@@ -63,17 +83,13 @@ export const PatientFormFields : FC<PatientFormFieldsProps> = ({
             value={data.domicilio.provincia}
             onChange={(e) => setData({ ...data, domicilio: { ...data.domicilio, provincia: e.target.value } })}
         />
-    </div>
-    <Input
-        required
-        label='Email'
-        value={data.email}
-        onChange={(e) => setData({ ...data, email: e.target.value })}
-    />
+    </div> */}
+    
     <div className='ml-auto my-4 gap-4 flex w-full items-center justify-end'>
         <Button
             className='min-w-[30%]'
             onClick={onReset}
+            type='reset'
             secondary
         >
             Resetear

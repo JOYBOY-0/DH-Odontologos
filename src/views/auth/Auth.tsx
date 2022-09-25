@@ -9,32 +9,46 @@ import { Base } from '../../common/Layout/Base'
 import { Section } from '../../common/Layout/Section'
 import './auth.css'
 import { Box } from '@/common/box/Box';
+import { FetchStatus, useFetchData } from '@/hooks/useFetchData';
+import axios from 'axios';
 
 export default function Auth () {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const {
-    loading,
-    error,
-    handleLogin,
-    handleSignUp } = useAuth()
+  const [status, setStatus] = useState(FetchStatus.IDLE);
+
+  const login = async () => {
+    setStatus(FetchStatus.LOADING);
+    try {
+        await axios.post("http://localhost:8080/login", {
+          email :  email,
+          password : password
+        })
+        .then((res) => {
+            // console.log(res)
+            setStatus(FetchStatus.SUCCESS)
+        })
+    } catch (error) {
+        setStatus(FetchStatus.ERROR);
+    }
+}
 
   return(
     <Base>
       <Section 
-      yPadding='pt-32 pb-20'
-      className='flex items-center justify-center min-h-screen' >
+        yPadding='pt-32 pb-20'
+        className='flex items-center justify-center min-h-screen' 
+      >
           
           <div className="flex flex-col items-center justify-center w-full lg:mb-10">
             <Box className='auth_wrapper' aria-live='polite'>
                 <div className='auth_form_box'>
                 <div 
                   className={`auth_backdrop_loading
-                  ${loading ? "flex " : "hidden" }`}
+                  ${status === FetchStatus.LOADING ? "flex " : "hidden" }`}
                 >
                   <LoadSpinner className="w-20 h-20 bg-slate-500 rounded-full" />
-                
                 </div>
                   <Routes>
                     <Route
@@ -45,8 +59,8 @@ export default function Auth () {
                           email={email}
                           setPassword={setPassword}
                           setEmail={setEmail}
-                          handleLogin={handleLogin}
-                          loading={loading}
+                          handleLogin={login}
+                          loading={status === FetchStatus.LOADING}
                         />
                       }
                     />
@@ -58,8 +72,8 @@ export default function Auth () {
                           email={email}
                           setPassword={setPassword}
                           setEmail={setEmail}
-                          handleSignup={handleSignUp}
-                          loading={loading}
+                          handleSignup={() => console.log('tryng')}
+                          loading={status === FetchStatus.LOADING}
                         />
                       }
                     />

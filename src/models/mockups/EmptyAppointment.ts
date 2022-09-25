@@ -8,3 +8,10 @@ export const EmptyAppointment : Appointment = {
     paciente: EmptyPatient,
     odontologo: EmptyDentist
 }
+
+export const EmptyAppointmentPost = {
+    id: 0,
+    fecha: '',
+    paciente_id: 0,
+    odontologo_id: 0
+}
