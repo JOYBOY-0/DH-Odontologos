@@ -26,7 +26,7 @@ export default function Auth () {
           password : password
         })
         .then((res) => {
-            // console.log(res)
+            console.log(res)
             setStatus(FetchStatus.SUCCESS)
         })
     } catch (error) {
