@@ -32,16 +32,18 @@ export const Clock : FC<ClockProps> = (props) => {
     const rotation = (target : any, val : number) => {
     if (target.current) {
         target.current.style.transform = `rotate(${val}deg)`;
-    }
+      }
     }
       
 
     useEffect(() => {
-      window.addEventListener('load', clock);
+        clock();
+        console.log('tik')
+      // window.addEventListener('load', clock);
     
-      return () => {
-        window.removeEventListener('load', clock);
-      }
+      // return () => {
+      //   window.removeEventListener('load', clock);
+      // }
     }, [])
     
 
